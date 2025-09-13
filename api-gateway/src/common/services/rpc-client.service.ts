@@ -4,10 +4,7 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class RpcClientService {
-  constructor(
-    @Inject('USER_SERVICE') private readonly client: ClientGrpc,
-    @Inject('AUTH_SERVICE') private readonly authClient: ClientGrpc,
-  ) {}
+  constructor(@Inject('USER_SERVICE') private readonly client: ClientGrpc) {}
 
   async sendCommand<T>(method: string, data: any): Promise<T> {
     try {
@@ -23,7 +20,7 @@ export class RpcClientService {
 
   async sendAuthCommand<T>(method: string, data: any): Promise<T> {
     try {
-      const service = this.authClient.getService<any>('AuthService');
+      const service = this.client.getService<any>('AuthService');
       return await firstValueFrom(service[method](data));
     } catch (err) {
       throw new HttpException(
